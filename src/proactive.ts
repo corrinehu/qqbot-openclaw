@@ -318,9 +318,9 @@ export async function sendProactive(
     if (imageUrl) {
       try {
         if (type === "c2c") {
-          await sendC2CImageMessage(accessToken, to, imageUrl, undefined, undefined);
+          await sendC2CImageMessage(accessToken, to, imageUrl, undefined, undefined, account.config?.proxyUrl);
         } else if (type === "group") {
-          await sendGroupImageMessage(accessToken, to, imageUrl, undefined, undefined);
+          await sendGroupImageMessage(accessToken, to, imageUrl, undefined, undefined, account.config?.proxyUrl);
         }
         console.log(`[qqbot:proactive] Sent image to ${type}:${to}`);
       } catch (err) {

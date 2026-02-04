@@ -800,9 +800,9 @@ openclaw cron add \\
                         // 发送图片
                         await sendWithTokenRetry(async (token) => {
                           if (event.type === "c2c") {
-                            await sendC2CImageMessage(token, event.senderId, imageUrl, event.messageId);
+                            await sendC2CImageMessage(token, event.senderId, imageUrl, event.messageId, undefined, account.config?.proxyUrl);
                           } else if (event.type === "group" && event.groupOpenid) {
-                            await sendGroupImageMessage(token, event.groupOpenid, imageUrl, event.messageId);
+                            await sendGroupImageMessage(token, event.groupOpenid, imageUrl, event.messageId, undefined, account.config?.proxyUrl);
                           } else if (event.channelId) {
                             // 频道使用 Markdown 格式（如果是公网 URL）
                             if (isHttpUrl) {
@@ -922,9 +922,9 @@ openclaw cron add \\
                         try {
                           await sendWithTokenRetry(async (token) => {
                             if (event.type === "c2c") {
-                              await sendC2CImageMessage(token, event.senderId, imageUrl, event.messageId);
+                              await sendC2CImageMessage(token, event.senderId, imageUrl, event.messageId, undefined, account.config?.proxyUrl);
                             } else if (event.type === "group" && event.groupOpenid) {
-                              await sendGroupImageMessage(token, event.groupOpenid, imageUrl, event.messageId);
+                              await sendGroupImageMessage(token, event.groupOpenid, imageUrl, event.messageId, undefined, account.config?.proxyUrl);
                             } else if (event.channelId) {
                               // 频道使用 Markdown 格式
                               await sendChannelMessage(token, event.channelId, `![](${parsedPayload.path})`, event.messageId);
@@ -1091,9 +1091,9 @@ openclaw cron add \\
                       try {
                         await sendWithTokenRetry(async (token) => {
                           if (event.type === "c2c") {
-                            await sendC2CImageMessage(token, event.senderId, imageUrl, event.messageId);
+                            await sendC2CImageMessage(token, event.senderId, imageUrl, event.messageId, undefined, account.config?.proxyUrl);
                           } else if (event.type === "group" && event.groupOpenid) {
-                            await sendGroupImageMessage(token, event.groupOpenid, imageUrl, event.messageId);
+                            await sendGroupImageMessage(token, event.groupOpenid, imageUrl, event.messageId, undefined, account.config?.proxyUrl);
                           } else if (event.channelId) {
                             // 频道暂不支持富媒体，跳过
                             log?.info(`[qqbot:${account.accountId}] Channel does not support rich media, skipping Base64 image`);
@@ -1200,9 +1200,9 @@ openclaw cron add \\
                       try {
                         await sendWithTokenRetry(async (token) => {
                           if (event.type === "c2c") {
-                            await sendC2CImageMessage(token, event.senderId, imageUrl, event.messageId);
+                            await sendC2CImageMessage(token, event.senderId, imageUrl, event.messageId, undefined, account.config?.proxyUrl);
                           } else if (event.type === "group" && event.groupOpenid) {
-                            await sendGroupImageMessage(token, event.groupOpenid, imageUrl, event.messageId);
+                            await sendGroupImageMessage(token, event.groupOpenid, imageUrl, event.messageId, undefined, account.config?.proxyUrl);
                           } else if (event.channelId) {
                             // 频道暂不支持富媒体，发送文本 URL
                             await sendChannelMessage(token, event.channelId, imageUrl, event.messageId);

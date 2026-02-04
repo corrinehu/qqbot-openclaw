@@ -491,7 +491,8 @@ export async function uploadC2CMedia(
   fileType: MediaFileType,
   url?: string,
   fileData?: string,
-  srvSendMsg = false
+  srvSendMsg = false,
+  proxyUrl?: string
 ): Promise<UploadMediaResponse> {
   if (!url && !fileData) {
     throw new Error("uploadC2CMedia: url or fileData is required");
@@ -508,7 +509,7 @@ export async function uploadC2CMedia(
     body.file_data = fileData;
   }
 
-  return apiRequest(accessToken, "POST", `/v2/users/${openid}/files`, body);
+  return apiRequest(accessToken, "POST", `/v2/users/${openid}/files`, body, proxyUrl);
 }
 
 /**
@@ -522,7 +523,8 @@ export async function uploadGroupMedia(
   fileType: MediaFileType,
   url?: string,
   fileData?: string,
-  srvSendMsg = false
+  srvSendMsg = false,
+  proxyUrl?: string
 ): Promise<UploadMediaResponse> {
   if (!url && !fileData) {
     throw new Error("uploadGroupMedia: url or fileData is required");
@@ -539,7 +541,7 @@ export async function uploadGroupMedia(
     body.file_data = fileData;
   }
 
-  return apiRequest(accessToken, "POST", `/v2/groups/${groupOpenid}/files`, body);
+  return apiRequest(accessToken, "POST", `/v2/groups/${groupOpenid}/files`, body, proxyUrl);
 }
 
 /**
@@ -550,7 +552,8 @@ export async function sendC2CMediaMessage(
   openid: string,
   fileInfo: string,
   msgId?: string,
-  content?: string
+  content?: string,
+  proxyUrl?: string
 ): Promise<{ id: string; timestamp: number }> {
   const msgSeq = msgId ? getNextMsgSeq(msgId) : 1;
   return apiRequest(accessToken, "POST", `/v2/users/${openid}/messages`, {
@@ -559,7 +562,7 @@ export async function sendC2CMediaMessage(
     msg_seq: msgSeq,
     ...(content ? { content } : {}),
     ...(msgId ? { msg_id: msgId } : {}),
-  });
+  }, proxyUrl);
 }
 
 /**
@@ -570,7 +573,8 @@ export async function sendGroupMediaMessage(
   groupOpenid: string,
   fileInfo: string,
   msgId?: string,
-  content?: string
+  content?: string,
+  proxyUrl?: string
 ): Promise<{ id: string; timestamp: string }> {
   const msgSeq = msgId ? getNextMsgSeq(msgId) : 1;
   return apiRequest(accessToken, "POST", `/v2/groups/${groupOpenid}/messages`, {
@@ -579,7 +583,7 @@ export async function sendGroupMediaMessage(
     msg_seq: msgSeq,
     ...(content ? { content } : {}),
     ...(msgId ? { msg_id: msgId } : {}),
-  });
+  }, proxyUrl);
 }
 
 /**
@@ -593,7 +597,8 @@ export async function sendC2CImageMessage(
   openid: string,
   imageUrl: string,
   msgId?: string,
-  content?: string
+  content?: string,
+  proxyUrl?: string
 ): Promise<{ id: string; timestamp: number }> {
   let uploadResult: UploadMediaResponse;
 
@@ -606,14 +611,14 @@ export async function sendC2CImageMessage(
     }
     const base64Data = matches[2];
     // 使用 file_data 上传
-    uploadResult = await uploadC2CMedia(accessToken, openid, MediaFileType.IMAGE, undefined, base64Data, false);
+    uploadResult = await uploadC2CMedia(accessToken, openid, MediaFileType.IMAGE, undefined, base64Data, false, proxyUrl);
   } else {
     // 公网 URL，使用 url 参数上传
-    uploadResult = await uploadC2CMedia(accessToken, openid, MediaFileType.IMAGE, imageUrl, undefined, false);
+    uploadResult = await uploadC2CMedia(accessToken, openid, MediaFileType.IMAGE, imageUrl, undefined, false, proxyUrl);
   }
 
   // 发送富媒体消息
-  return sendC2CMediaMessage(accessToken, openid, uploadResult.file_info, msgId, content);
+  return sendC2CMediaMessage(accessToken, openid, uploadResult.file_info, msgId, content, proxyUrl);
 }
 
 /**
@@ -627,7 +632,8 @@ export async function sendGroupImageMessage(
   groupOpenid: string,
   imageUrl: string,
   msgId?: string,
-  content?: string
+  content?: string,
+  proxyUrl?: string
 ): Promise<{ id: string; timestamp: string }> {
   let uploadResult: UploadMediaResponse;
 
@@ -640,14 +646,14 @@ export async function sendGroupImageMessage(
     }
     const base64Data = matches[2];
     // 使用 file_data 上传
-    uploadResult = await uploadGroupMedia(accessToken, groupOpenid, MediaFileType.IMAGE, undefined, base64Data, false);
+    uploadResult = await uploadGroupMedia(accessToken, groupOpenid, MediaFileType.IMAGE, undefined, base64Data, false, proxyUrl);
   } else {
     // 公网 URL，使用 url 参数上传
-    uploadResult = await uploadGroupMedia(accessToken, groupOpenid, MediaFileType.IMAGE, imageUrl, undefined, false);
+    uploadResult = await uploadGroupMedia(accessToken, groupOpenid, MediaFileType.IMAGE, imageUrl, undefined, false, proxyUrl);
   }
 
   // 发送富媒体消息
-  return sendGroupMediaMessage(accessToken, groupOpenid, uploadResult.file_info, msgId, content);
+  return sendGroupMediaMessage(accessToken, groupOpenid, uploadResult.file_info, msgId, content, proxyUrl);
 }
 
 // ============ 后台 Token 刷新 (P1-1) ============
