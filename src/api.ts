@@ -334,12 +334,13 @@ export async function sendC2CMessage(
   accessToken: string,
   openid: string,
   content: string,
-  msgId?: string
+  msgId?: string,
+  proxyUrl?: string
 ): Promise<MessageResponse> {
   const msgSeq = msgId ? getNextMsgSeq(msgId) : 1;
   const body = buildMessageBody(content, msgId, msgSeq);
 
-  return apiRequest(accessToken, "POST", `/v2/users/${openid}/messages`, body);
+  return apiRequest(accessToken, "POST", `/v2/users/${openid}/messages`, body, proxyUrl);
 }
 
 /**
@@ -349,7 +350,8 @@ export async function sendC2CInputNotify(
   accessToken: string,
   openid: string,
   msgId?: string,
-  inputSecond: number = 60
+  inputSecond: number = 60,
+  proxyUrl?: string
 ): Promise<void> {
   const msgSeq = msgId ? getNextMsgSeq(msgId) : 1;
   const body = {
@@ -362,7 +364,7 @@ export async function sendC2CInputNotify(
     ...(msgId ? { msg_id: msgId } : {}),
   };
 
-  await apiRequest(accessToken, "POST", `/v2/users/${openid}/messages`, body);
+  await apiRequest(accessToken, "POST", `/v2/users/${openid}/messages`, body, proxyUrl);
 }
 
 /**
@@ -372,12 +374,13 @@ export async function sendChannelMessage(
   accessToken: string,
   channelId: string,
   content: string,
-  msgId?: string
+  msgId?: string,
+  proxyUrl?: string
 ): Promise<{ id: string; timestamp: string }> {
   return apiRequest(accessToken, "POST", `/channels/${channelId}/messages`, {
     content,
     ...(msgId ? { msg_id: msgId } : {}),
-  });
+  }, proxyUrl);
 }
 
 /**
@@ -387,12 +390,13 @@ export async function sendGroupMessage(
   accessToken: string,
   groupOpenid: string,
   content: string,
-  msgId?: string
+  msgId?: string,
+  proxyUrl?: string
 ): Promise<MessageResponse> {
   const msgSeq = msgId ? getNextMsgSeq(msgId) : 1;
   const body = buildMessageBody(content, msgId, msgSeq);
 
-  return apiRequest(accessToken, "POST", `/v2/groups/${groupOpenid}/messages`, body);
+  return apiRequest(accessToken, "POST", `/v2/groups/${groupOpenid}/messages`, body, proxyUrl);
 }
 
 /**
