@@ -642,11 +642,11 @@ openclaw cron add \\
           try {
             await sendWithTokenRetry(async (token) => {
               if (event.type === "c2c") {
-                await sendC2CMessage(token, event.senderId, errorText, event.messageId);
+                await sendC2CMessage(token, event.senderId, errorText, event.messageId, account.config?.proxyUrl);
               } else if (event.type === "group" && event.groupOpenid) {
-                await sendGroupMessage(token, event.groupOpenid, errorText, event.messageId);
+                await sendGroupMessage(token, event.groupOpenid, errorText, event.messageId, account.config?.proxyUrl);
               } else if (event.channelId) {
-                await sendChannelMessage(token, event.channelId, errorText, event.messageId);
+                await sendChannelMessage(token, event.channelId, errorText, event.messageId, account.config?.proxyUrl);
               }
             });
           } catch (sendErr) {
